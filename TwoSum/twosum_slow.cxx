@@ -21,14 +21,17 @@ std::vector<int> twoSum(std::vector<int> &numbers, int target) {
 
 }
 
-
+#include<fstream>
 int main(){
 
-  int myints[5] = {2,7,11,15,22};
-  std::vector<int> fifth (myints, myints + sizeof(myints) / sizeof(int) );
-  std::vector<int> idx = twoSum(fifth,33);
-  for (std::vector<int>::iterator it = idx.begin(); it != idx.end(); ++it)std::cout << *it << ' ';
-  std::cout << '\n';
-
-  return 1;
+	std::fstream input("in.txt",std::ios::in);
+        std::vector<int> test(16023);
+        int i = 1;
+        while(i<=16023){
+                input>>test[i-1];
+                i++;
+        }
+        twoSum(test,16021);
+	
+	return 1;
 }

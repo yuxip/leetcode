@@ -60,65 +60,105 @@ void QuickSort( std::vector<mypair>& sqlist ){
 	
 }
 
-//find target in a sorted list vector<mypair>. If it doesn't exist return the inertion location
-int locate( std::vector<mypair>& sqlist, int low, int high, int target ){
-
-        while(low < high){
-
-                int m = (low + high)/2;
-                if(target>sqlist[m].value){     
-                        low = m+1;
-                }
-                else{ 
-                        high = m-1;
-                }
-        }
-	
-	if(target==sqlist[high].value) return high;	
-	else return high + 1;
-
-}
 
 std::vector<int> twoSum(std::vector<int> &numbers, int target) {
 
 	std::vector<mypair> sqlist;
-	for(int i = 0; i < numbers.size(); i++){
-		mypair mp;
-		mp.pos = i;
-		mp.value = numbers[i];
-		sqlist.push_back(mp);
-	}
-	
-	QuickSort(sqlist);
-	
-	int low = 0;
-	int high = sqlist.size() - 1;
-	int loc = locate(sqlist,low,high,target);	
 
-	std::vector<int> idx(2);
-        for(int it1 = 0; it1 < loc; it1++){
-                int tid2 = target - sqlist[it1].value;
-		int tid2loc = locate(sqlist,it1,loc,tid2);
-                if(sqlist[tid2loc].value==tid2){
-			idx[0] = sqlist[it1].pos+1;
-			idx[1] = sqlist[tid2loc].pos+1;
-                        break;
-                }
+        for(int i = 0; i < numbers.size(); i++){
+
+                mypair mp;
+
+                mp.pos = i;
+
+                mp.value = numbers[i];
+
+                sqlist.push_back(mp);
+
         }
-	
-	if(idx[0]>idx[1]){
-		int tmp = idx[0];
-		idx[0] = idx[1];
-		idx[1] = tmp;
-	}
+
+
+
+        QuickSort(sqlist);
+
+        
+
+        int low = 0;
+
+        int high = sqlist.size()-1;
+
+        while(low < high){
+
+
+
+                int m = (low + high)/2;
+
+                if(target>sqlist[m].value){
+			low = m+1;
+
+                }
+
+                else{ 
+
+                        high = m-1;
+
+                }
+
+        }
+
+
+
+        std::vector<int> idx(2);
+
+        bool found = false;
+
+        for(int it1 = 0; it1 < sqlist.size(); it1++){
+
+                int tid2 = target - sqlist[it1].value;
+
+                for(int it2 = it1+1; it2 < sqlist.size(); it2++){
+
+                        if(sqlist[it2].value==tid2){
+
+                                idx[0] = sqlist[it1].pos+1;
+
+                                idx[1] = sqlist[it2].pos+1;
+
+                                found = true;
+
+                                break;
+
+                        }
+
+                }
+
+                if(found)break;
+
+        }
+
+        
+
+        if(idx[0]>idx[1]){
+
+                int tmp = idx[0];
+
+                idx[0] = idx[1];
+
+                idx[1] = tmp;
+
+        }
+
+
+
         return idx;
-	
 	
 }
 
 #include<fstream>
 int main(){
 	
+//	int myints[5] = {2,7,11,15,22};
+//	std::vector<int> fifth (myints, myints + sizeof(myints) / sizeof(int) );
 	
 	std::fstream input("in.txt",std::ios::in);
 	std::vector<int> test(16023);
@@ -128,6 +168,7 @@ int main(){
 		i++;
 	}
 	twoSum(test,16021);
+//	twoSum(fifth,9);
 	
 	return 1;
 }
