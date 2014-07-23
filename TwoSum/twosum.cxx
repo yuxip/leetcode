@@ -11,6 +11,7 @@
 //(min, target/2) and (target/2, max) 
 
 #include <vector>
+#include <map>
 #include <iostream>
 
 //quick sort -- Partition, update pivot position
@@ -50,13 +51,15 @@ void QuickSort( std::vector<int>& sqlist ){
 }
 
 
-std::vector<int> twoSum(std::vector<int> &numbers, int target) {
+//std::vector<int> twoSum(std::vector<int> &numbers, int target) {
+void twoSum(std::vector<int> &numbers, int target) {
 
-	//build a map to record the element position at the same time
+	//build a map to record the element's initial position at the same time
 	std::map<int,int> mymap;
-	for(int i = 0; i < numbers.size() - 1; i++) mymap[i] = numbers[i];
-	QucikSort(numbers);
+	for(int i = 0; i < numbers.size(); i++)mymap[i] = numbers[i]; //i->key
+	QucikSort(mymap);
 	
+	/*
 	//find proper location of target by using binary search
 	int low = 0;
 	int high = numbers.size()-1;
@@ -74,6 +77,7 @@ std::vector<int> twoSum(std::vector<int> &numbers, int target) {
 	//insertion point is high + 1
 	//search range (0 high)
 	std::cout<<"search range (0, "<<high<<") "<<std::endl;
+	*/
 	
 }
 
@@ -82,10 +86,11 @@ int main(){
 	
 	int myints[5] = {22,11,15,7,2};
 	std::vector<int> fifth (myints, myints + sizeof(myints) / sizeof(int) );
-//	std::vector<int> idx = twoSum(fifth,33);
-	QuickSort(fifth);
+	twoSum(fifth,33);
+	
+/*	QuickSort(fifth);
 	std::cout<<"after quick sorting" <<std::endl;
 	for (std::vector<int>::iterator it = fifth.begin(); it != fifth.end(); ++it)std::cout << *it << ' ';
-        std::cout << '\n';
+        std::cout << '\n';*/
 	return 1;
 }
