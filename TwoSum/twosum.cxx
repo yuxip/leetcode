@@ -61,7 +61,7 @@ void QSort( std::vector<mypair>& sqlist, int low, int high ){
 		bool lowmoved = false;
 		bool highmoved = false;
 		int pivotloc = Partition(sqlist, low, high, lowmoved, highmoved);
-		std::cout<<"pivotloc = "<<pivotloc<<", lowmoved = "<<lowmoved<<", highmoved = "<<highmoved<<std::endl;
+	//	std::cout<<"pivotloc = "<<pivotloc<<", lowmoved = "<<lowmoved<<", highmoved = "<<highmoved<<std::endl;
 		if(lowmoved)QSort(sqlist,low,pivotloc-1);
 		if(highmoved)QSort(sqlist,pivotloc+1,high);
 	//	QSort(sqlist,low,pivotloc-1);
@@ -76,13 +76,13 @@ void QuickSort( std::vector<mypair>& sqlist ){
 	
 }
 
-//find target in a sorted list vector<mypair>. If it doesn't exist return the inertion location
-int locate( std::vector<mypair>& sqlist, int low, int high, int target ){
+//return the insertion location of target
+int locateInsert( std::vector<mypair>& sqlist, int low, int high, int target ){
 
         while(low < high){
 
                 int m = (low + high)/2;
-                if(target>sqlist[m].value){     
+                if(target>=sqlist[m].value){     
                         low = m+1;
                 }
                 else{ 
@@ -90,9 +90,25 @@ int locate( std::vector<mypair>& sqlist, int low, int high, int target ){
                 }
         }
 	
-	if(target==sqlist[high].value) return high;	
-	else return high + 1;
+	return high + 1;
 
+}
+
+//find target in a sorted list vector<mypair>
+int locateElement( std::vector<mypair>& sqlist, int low, int high, int target ){
+	
+	while(low < high){
+
+                int m = (low + high)/2;
+                if(target>=sqlist[m].value){
+                        low = m+1;
+                }
+                else{
+                        high = m-1;
+                }
+        }
+	if(target==sqlist[high].value) return high; 
+	else return -1;
 }
 
 //std::vector<int> twoSum(std::vector<int> &numbers, int target) {
@@ -108,25 +124,28 @@ void twoSum(std::vector<int> &numbers, int target) {
 	
 	QuickSort(sqlist);
 	
-	std::cout<<"after QuickSort()"<<std::endl;
-	for(int i = 0; i < sqlist.size(); i++)std::cout<<sqlist[i].value<<" , pos = "<<sqlist[i].pos+1<<std::endl;	
+//	std::cout<<"after QuickSort()"<<std::endl;
+//	for(int i = 0; i < sqlist.size(); i++)std::cout<<sqlist[i].value<<" , pos = "<<sqlist[i].pos+1<<std::endl;	
 	
-	
+/*	
 	int low = 0;
 	int high = sqlist.size() - 1;
-	int loc = locate(sqlist,low,high,target);
-	if(loc<=3)loc=3;	
+	int loc = locateInsert(sqlist,low,high,target);
 	std::cout<<"loc = "<<loc<<std::endl;
 	std::vector<int> idx(2);
+	bool found = false;
         for(int it1 = 0; it1 < loc; it1++){
                 int tid2 = target - sqlist[it1].value;
-		int tid2loc = locate(sqlist,it1,loc,tid2);
-                if(sqlist[tid2loc].value==tid2){
-			std::cout<<"tid2loc = "<<tid2loc<<std::endl;
+		int id2loc = locateElement(sqlist, it1+1, loc, tid2);		
+		if(sqlist[id2loc].value==tid2){
+			std::cout<<"it1 = "<<it1<<std::endl;
+			std::cout<<"tid2 = "<<tid2<<std::endl;
+			std::cout<<"id2loc = "<<id2loc<<std::endl;
 			idx[0] = sqlist[it1].pos+1;
-			idx[1] = sqlist[tid2loc].pos+1;
-                        break;
-                }
+			idx[1] = sqlist[id2loc].pos+1;
+			break;
+		}
+		
         }
 	
 	if(idx[0]>idx[1]){
@@ -135,7 +154,7 @@ void twoSum(std::vector<int> &numbers, int target) {
 		idx[1] = tmp;
 	}
 	
-	std::cout<<"idx[0] = "<<idx[0]<<", idx[1] = "<<idx[1]<<std::endl;
+	std::cout<<"idx[0] = "<<idx[0]<<", idx[1] = "<<idx[1]<<std::endl;*/
 //	return idx;
 	
 	
@@ -145,7 +164,7 @@ void twoSum(std::vector<int> &numbers, int target) {
 int main(){
 	
 	
-/*	std::fstream input("in.txt",std::ios::in);
+	std::fstream input("in.txt",std::ios::in);
 	std::vector<int> test(16023);
 	int i = 1;
 	while(i<=16023){
@@ -153,11 +172,11 @@ int main(){
 		i++;
 	}
 	twoSum(test,16021);
-*/
 
-	int myints[4] = {0,4,3,0};
+
+/*	int myints[4] = {0,4,3,0};
 	std::vector<int> fifth (myints, myints + sizeof(myints) / sizeof(int) );
 	twoSum(fifth,0);	
-
+*/
 	return 1;
 }
