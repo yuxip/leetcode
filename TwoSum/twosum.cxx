@@ -21,17 +21,27 @@ typedef struct{
 
 //quick sort -- Partition, update pivot position
 
-int Partition( std::vector<mypair>& sqlist, int low, int high ){
+int Partition( std::vector<mypair>& sqlist, int low, int high, bool& lowmoved, bool& highmoved){
 
+	lowmoved = false;
+	highmoved = false;
 	int pivot_value = sqlist[low].value; //first element in range serve as pivot
 	int pivot_pos = sqlist[low].pos;
 	while( low < high ){
 		
-		while(low < high && sqlist[high].value >= pivot_value) --high;
+		while(low < high && sqlist[high].value >= pivot_value){
+			if(sqlist[high].value < sqlist[high-1].value && high > low+1)highmoved=true;
+			--high;
+			 
+		}
+		//if( low!=high ) highmoved = true;
 		//swap element [high] and pivot (already saved)
 		sqlist[low].pos = sqlist[high].pos;
 		sqlist[low].value = sqlist[high].value;
-		while(low < high && sqlist[low].value <= pivot_value) ++low;
+		while(low < high && sqlist[low].value <= pivot_value){
+			if(sqlist[low].value > sqlist[low+1].value && low < high-1)lowmoved=true;
+			++low;
+		}
 		sqlist[high].pos = sqlist[low].pos;
 		sqlist[high].value = sqlist[low].value;
 	}
@@ -44,12 +54,18 @@ int Partition( std::vector<mypair>& sqlist, int low, int high ){
 }
 
 //partion --> QSort, recursively
+//return bool variable indicating if any element has been moved during Partition()
 void QSort( std::vector<mypair>& sqlist, int low, int high ){ 	
 	
 	if(low < high){
-		int pivotloc = Partition(sqlist, low, high);
-		QSort(sqlist,low,pivotloc-1);
-		QSort(sqlist,pivotloc+1,high);
+		bool lowmoved = false;
+		bool highmoved = false;
+		int pivotloc = Partition(sqlist, low, high, lowmoved, highmoved);
+		std::cout<<"pivotloc = "<<pivotloc<<", lowmoved = "<<lowmoved<<", highmoved = "<<highmoved<<std::endl;
+		if(lowmoved)QSort(sqlist,low,pivotloc-1);
+		if(highmoved)QSort(sqlist,pivotloc+1,high);
+	//	QSort(sqlist,low,pivotloc-1);
+	//	QSort(sqlist,pivotloc+1,high);
 	}
 	//else do nothing
 }
@@ -79,7 +95,8 @@ int locate( std::vector<mypair>& sqlist, int low, int high, int target ){
 
 }
 
-std::vector<int> twoSum(std::vector<int> &numbers, int target) {
+//std::vector<int> twoSum(std::vector<int> &numbers, int target) {
+void twoSum(std::vector<int> &numbers, int target) {
 
 	std::vector<mypair> sqlist;
 	for(int i = 0; i < numbers.size(); i++){
@@ -91,15 +108,21 @@ std::vector<int> twoSum(std::vector<int> &numbers, int target) {
 	
 	QuickSort(sqlist);
 	
+	std::cout<<"after QuickSort()"<<std::endl;
+	for(int i = 0; i < sqlist.size(); i++)std::cout<<sqlist[i].value<<" , pos = "<<sqlist[i].pos+1<<std::endl;	
+	
+	
 	int low = 0;
 	int high = sqlist.size() - 1;
-	int loc = locate(sqlist,low,high,target);	
-
+	int loc = locate(sqlist,low,high,target);
+	if(loc<=3)loc=3;	
+	std::cout<<"loc = "<<loc<<std::endl;
 	std::vector<int> idx(2);
         for(int it1 = 0; it1 < loc; it1++){
                 int tid2 = target - sqlist[it1].value;
 		int tid2loc = locate(sqlist,it1,loc,tid2);
                 if(sqlist[tid2loc].value==tid2){
+			std::cout<<"tid2loc = "<<tid2loc<<std::endl;
 			idx[0] = sqlist[it1].pos+1;
 			idx[1] = sqlist[tid2loc].pos+1;
                         break;
@@ -111,7 +134,9 @@ std::vector<int> twoSum(std::vector<int> &numbers, int target) {
 		idx[0] = idx[1];
 		idx[1] = tmp;
 	}
-        return idx;
+	
+	std::cout<<"idx[0] = "<<idx[0]<<", idx[1] = "<<idx[1]<<std::endl;
+//	return idx;
 	
 	
 }
@@ -120,7 +145,7 @@ std::vector<int> twoSum(std::vector<int> &numbers, int target) {
 int main(){
 	
 	
-	std::fstream input("in.txt",std::ios::in);
+/*	std::fstream input("in.txt",std::ios::in);
 	std::vector<int> test(16023);
 	int i = 1;
 	while(i<=16023){
@@ -128,6 +153,11 @@ int main(){
 		i++;
 	}
 	twoSum(test,16021);
-	
+*/
+
+	int myints[4] = {0,4,3,0};
+	std::vector<int> fifth (myints, myints + sizeof(myints) / sizeof(int) );
+	twoSum(fifth,0);	
+
 	return 1;
 }
