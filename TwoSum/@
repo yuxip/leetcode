@@ -1,0 +1,87 @@
+#include<fstream>
+#include<iostream>
+#include<vector>
+
+int Partition( std::vector<int>& sqlist, int low, int high, bool& lowmoved, bool& highmoved){
+
+        lowmoved = false;
+        highmoved = false;
+
+        int mid = (low+high)/2;
+        int pivot = -1;
+        if(sqlist[low].value > sqlist[high].value){
+                if(sqlist[low].value < sqlist[mid].value) pivot = low;
+                else if(sqlist[high].value > sqlist[mid].value) pivot = high;
+                else pivot = mid;
+        }
+        else if(sqlist[low].value > sqlist[mid].value) pivot = low;
+        else{
+                if(sqlist[high].value > sqlist[mid].value) pivot = mid;
+                else pivot = high;
+        }
+
+        if(pivot!=low){
+                int tmp_value = sqlist[low].value;
+                sqlist[low].value = sqlist[pivot].value;
+                sqlist[pivot].value = tmp_value;
+        }
+
+        int pivot_value = sqlist[low].value;
+        while( low < high ){
+		while(low < high && sqlist[high].value >= pivot_value){
+			if(sqlist[high].value < sqlist[high-1].value)highmoved=true;
+                        --high;
+                }
+                sqlist[low].value = sqlist[high].value;
+                while(low < high && sqlist[low].value <= pivot_value){
+			if(sqlist[low].value > sqlist[low+1].value)lowmoved=true;
+                        ++low;
+                }
+                sqlist[high].value = sqlist[low].value;
+        }
+
+        sqlist[low].value = pivot_value;
+
+        return low;
+}
+
+
+void QSort( std::vector<int>& sqlist, int low, int high ){
+
+        if(low < high){
+		bool lowmoved = false;
+		bool highmoved = false;
+		int pivotloc = Partition(sqlist, low, high, lowmoved, highmoved);
+	//	int pivotloc = Partition(sqlist, low, high);
+		if(lowmoved)QSort(sqlist,low,pivotloc-1);
+		if(highmoved)QSort(sqlist,pivotloc+1,high);
+	//	QSort(sqlist,low,pivotloc-1);
+	//	QSort(sqlist,pivotloc+1,high);
+	}
+}
+
+
+void quickSort( std::vector<int>& sqlist ){
+
+        QSort(sqlist,0,sqlist.size()-1);
+
+}
+
+
+int main(){
+
+
+        std::fstream input("in2.txt",std::ios::in);
+        std::vector<int> test(282);
+        int i = 1;
+        while(i<=282){
+                input>>test[i-1];
+                i++;
+        }
+
+        quickSort(test);
+
+	std::cout<<"after quick sort: "<<std::endl;
+	for(int i = 0; i < 282; i++)std::cout<<test[i]<<std::endl;
+	return 1;
+}

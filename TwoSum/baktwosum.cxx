@@ -53,15 +53,13 @@ int Partition( std::vector<mypair>& sqlist, int low, int high, bool& lowmoved, b
 	while( low < high ){
 		
 		while(low < high && sqlist[high].value >= pivot_value){
-		//	if(sqlist[high].value < sqlist[high-1].value && high > low+1)highmoved=true;
-			if(sqlist[high].value < sqlist[high-1].value)highmoved=true;
+			if(sqlist[high].value < sqlist[high-1].value && high > low+1)highmoved=true;
 			--high;
 		}
 		sqlist[low].pos = sqlist[high].pos;
 		sqlist[low].value = sqlist[high].value;
 		while(low < high && sqlist[low].value <= pivot_value){
-		//	if(sqlist[low].value > sqlist[low+1].value && low < high-1)lowmoved=true;
-			if(sqlist[low].value > sqlist[low+1].value)lowmoved=true;
+			if(sqlist[low].value > sqlist[low+1].value && low < high-1)lowmoved=true;
 			++low;
 		}
 		sqlist[high].pos = sqlist[low].pos;
@@ -84,8 +82,6 @@ void QSort( std::vector<mypair>& sqlist, int low, int high ){
 		int pivotloc = Partition(sqlist, low, high, lowmoved, highmoved);
 		if(lowmoved)QSort(sqlist,low,pivotloc-1);
 		if(highmoved)QSort(sqlist,pivotloc+1,high);
-	//	QSort(sqlist,low,pivotloc-1);
-	//	QSort(sqlist,pivotloc+1,high);
 	}
 }
 
@@ -123,9 +119,13 @@ int locateElement( std::vector<mypair>& sqlist, int low, int high, int target ){
                 if(target>sqlist[m].value){
                         low = m+1;
                 }
-                else{
-                        high = m;
+                else if(target<sqlist[m].value){
+                        high = m-1;
                 }
+		else{
+			low = m;
+			high = m;
+		}
         }
 	if(target==sqlist[high].value) return high; 
 	else return -1;
@@ -142,8 +142,8 @@ std::vector<int> twoSum(std::vector<int> &numbers, int target) {
 	}
 	
 	QuickSort(sqlist);
-//	std::cout<<"after QuickSort()"<<std::endl;
-//	for(int i = 0; i < sqlist.size(); i++)std::cout<<sqlist[i].value<<" , pos = "<<sqlist[i].pos+1<<std::endl;
+	std::cout<<"after QuickSort()"<<std::endl;
+	for(int i = 0; i < sqlist.size(); i++)std::cout<<sqlist[i].value<<" , pos = "<<sqlist[i].pos+1<<std::endl;
 	
 	int low = 0;
 	int high = sqlist.size() - 1;
@@ -154,10 +154,10 @@ std::vector<int> twoSum(std::vector<int> &numbers, int target) {
         for(int it1 = 0; it1 < high; it1++){
                 int tid2 = target - sqlist[it1].value;
 		int id2loc = locateElement(sqlist, it1+1, high, tid2);		
-//		std::cout<<"it1 = "<<it1<<std::endl;
-//		std::cout<<"tid2 = "<<tid2<<std::endl;
-//		std::cout<<"search range: "<<it1+1<<" to "<<high<<std::endl;
-//		std::cout<<"id2loc = "<<id2loc<<std::endl;
+		std::cout<<"it1 = "<<it1<<std::endl;
+		std::cout<<"tid2 = "<<tid2<<std::endl;
+		std::cout<<"search range: "<<it1+1<<" to "<<high<<std::endl;
+		std::cout<<"id2loc = "<<id2loc<<std::endl;
 		if(sqlist[id2loc].value==tid2){
 			idx[0] = sqlist[it1].pos+1;
 			idx[1] = sqlist[id2loc].pos+1;
@@ -193,16 +193,15 @@ int main(){
 	int i = 1;
 	while(i<=282){
 		input>>test[i-1];
-		std::cout<<"test["<<i-1<<"] = "<<test[i-1]<<std::endl;
 		i++;
 	}
 	twoSum(test,74);
 
 //	int myints[4] = {0,3,5,0};
-//	int myints[9] = {150,24,79,50,88,345,3,4,5};
+//	int myints[7] = {150,24,79,50,88,345,3};
 //	int myints[9] = {3,2,1,-6,-3,8,88,345,6};
 //	std::vector<int> fifth (myints, myints + sizeof(myints) / sizeof(int) );
-//	twoSum(fifth,200);	
+//	twoSum(fifth,-9);	
 
 	return 1;
 }
