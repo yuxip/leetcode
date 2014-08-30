@@ -9,17 +9,19 @@
 #include<iostream>
 #include<cstdlib>
 #include<vector>
+#include<cmath>
 
 using namespace std;
 
-typedef struct TreeNode {
+class TreeNode {
 	
+public:
+	TreeNode(int x) : val(x), left(NULL), right(NULL) {}
 	int val;
 	TreeNode *left;
 	TreeNode *right;
-	TreeNone(int x) : val(x), left(NULL), right(NULL) {}
 
-}TNode;
+};
 
 vector<int> inorderTraversal( TreeNode *root ){
 
@@ -36,27 +38,67 @@ vector<int> inorderTraversal( TreeNode *root ){
 	
 	TreeNode* rchild = root->right;
 	vector<int> rsub;
-	if(rchild)rsub = inorderTreversal(rchild);
+	if(rchild)rsub = inorderTraversal(rchild);
 	//append rsub to the end of (lsub+valnode)
 	result.insert( result.end(), rsub.begin(), rsub.end() );
 	
 	return result;
 }
 
+TreeNode* createTree(char* stree, int nnodes, int inode){
+	
+	//calculate eff. node index in stree
+	int shapes = 0;
+	int level = floor(log(inode)/log(2)) + 1;
+	for(int i = 1; i < inode/2; i++){ //count number of '#' before its parent
+		if(stree[i-1]=='#'){
+			int slevel = floor(log(i)/log(2)) + 1;
+			if(slevel<level)shapes += pow(2,level-slevel);
+		}
+	}
+
+	int enode = inode - shapes; //eff. node index (in stree)	
+	cout<<"inode = "<<inode<<", enode = "<<enode<<endl;
+	if(enode>nnodes) return NULL;
+	else if(stree[enode-1]=='#') return NULL;
+	else{
+		
+		//build node
+		char c = stree[enode-1];
+		int val = isdigit(c) ? c-'0' : 0;
+		TreeNode* subt = new TreeNode(val);
+		cout<<"inode = "<<inode<<" val = "<<val<<endl;
+		//build left child
+		TreeNode* lchild = createTree(stree, nnodes, 2*inode);
+		subt->left = lchild;
+		//build right child
+		TreeNode* rchild = createTree(stree, nnodes, 2*inode+1);
+		subt->right = rchild;
+		
+		return subt;
+	}
+}
+
 int main(){
 	
-	const int nnodes = 4;
-	Char_t stree[nnodes] = {'1','#','2','3'};
+//	const int nnodes = 4;
+//	char stree[nnodes] = {'1','#','2','3'};
+	const int nnodes = 9;
+	char stree[nnodes] = {'1','2','3','#','#','4','#','#','5'};
 	if(stree[0]=='#'){
 		cout<<"tree root can not be null"<<endl;
 		return 0;
 	}
 	
 	//root
-	TreeNode* root = new TreeNode(atoi(&stree[0]));
+	TreeNode* root = createTree(stree, nnodes, 1);
+		
+	vector<int> result = inorderTraversal(root);	
+	for(vector<int>::iterator it = result.begin(); it != result.end(); it++){
+		cout<<*it<<' ';
+	}
 	
-	int i = 1;
-	while(	
-		
-		
-		
+	cout<<endl;
+	
+	return 1;
+}
