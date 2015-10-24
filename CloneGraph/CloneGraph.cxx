@@ -64,7 +64,7 @@ UndirectedGraphNode *cloneGraph(UndirectedGraphNode *node) {
 	return new_node;
 }
 
-//Print the labels of node and its neighbors
+//Print the labels of node and all of its neighbors
 void PrintLabel(UndirectedGraphNode* node) {
 	cout << "node label: " << node->label << endl;
 	for (vector<UndirectedGraphNode*>::iterator it = node->neighbors.begin();
